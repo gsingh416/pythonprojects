@@ -18,7 +18,7 @@ print(list1)
 
 for item in list1:
     print(item)
-else:
+#else:
     print("Done!")
     
 
