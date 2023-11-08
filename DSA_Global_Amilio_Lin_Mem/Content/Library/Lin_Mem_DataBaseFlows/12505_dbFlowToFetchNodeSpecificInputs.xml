@@ -1,0 +1,1636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow id="6bf638a8-875f-4dc0-8e76-24829d333ef8">
+  <descriptionCdata><![CDATA[6bf638a8-875f-4dc0-8e76-24829d333ef8.39b32a1a-e790-4352-97e2-999f29bdd05e.description=<pre>\nThis operation does not do anything. It can be used to filter flow variables by defining them as inputs and filtering them in the Results tab.\n\nInputs\:\n    field1 \u2013 An optional input that can be used for filtering flow variables.\n    field2 \u2013 An optional input that can be used for filtering flow variables.\n    field3 \u2013 An optional input that can be used for filtering flow variables.\n    field4 \u2013 An optional input that can be used for filtering flow variables.\n\nResults\:\n    returnResult - This is the primary output. It contains the value of  "field1" as it was specified at input or when filtered. \n\nResponses\:\n    success - The operation completed as stated in the description.\n</pre>
+6bf638a8-875f-4dc0-8e76-24829d333ef8.d66b5d9c-fc62-4f69-b49f-abdf5fa42b3e.description=<pre>\nThis operation executes PowerShell scripts on a given host.\n\nInputs\:\n    host - The hostname or IP address of the PowerShell host. If you specify this input then you should not specify URI and shellURI.\nDefault value\: localhost\n    URI - Specifies a Uniform Resource Identifier (URI) that defines the connection endpoint for the interactive session. \nValue format\: <Transport>\://<ComputerName>\:<Port>/<ApplicationName>\nExample\: http\://exch2010CAS1/Powershell?serializationLevel\=Full\n    shellURI - Gets the Uniform Resource Identifier (URI) of the shell that is launched when the connection is made.\nExample\: http\://schemas.microsoft.com/powershell/Microsoft.Exchange\n    username - The username to use when connecting to the server.\nValue format\: username@domain or domain\\username.\n    password - The password to use when connecting to the server.\n    configurationName - Specifies the session configuration that is used for the new PSSession. If you specify only the configuration name, the following schema URI is prepended\: http\://schemas.microsoft.com/powershell. Use Microsoft.PowerShell32 to force x32 PowerShell version on x64 machines.\n    authType - Specifies the mechanism that is used to authenticate the user's credentials. \nValid values\: Default, Basic, Negotiate, NegotiateWithImplicitCredential, Credssp, Digest and Kerberos. (case-insensitive)\nDefault value\: Default\n    connectionTimeout - Determines how long the client computer waits for the remote session connection to be established. When the interval expires, the command to establish the connection fails. Enter a positive value in milliseconds.\nDefault value\: 180000 (3 minutes).\n    scriptTimeout - Determines how long the client computer waits for the PowerShell script to be executed. When the interval expires, the operation fails. Enter a positive value in milliseconds. An empty value means no time-out; the script execution continues indefinitely.\n    useSSL - If true, the operation uses the Secure Sockets Layer (SSL) protocol to establish a connection to the remote computer. By default, SSL is not used. WS-Management encrypts all Windows PowerShell content transmitted over the network. UseSSL is an additional protection that sends the data across an HTTPS connection instead of an HTTP connection. Default port for SSL is 5986.\nDefault value\: false\n    skipCACheck - Indicates whether, when connecting over HTTPS, the client does not validate that the server certificate is signed by a trusted certificate authority (CA).\nDefault value\: true\n    skipCNCheck - Indicates whether the certificate common name (CN) of the server and the hostname of the server are not checked for being the same.\nDefault value\: true\n    port - Specifies the network port on the remote computer that is used for this connection. To connect to a remote computer, the remote computer must be listening on the port that the connection uses. The default ports are 5985 (the WinRM port for HTTP) and 5986 (the WinRM port for HTTPS).\n    keepSessionAlive - If true, the operation will not close the PowerShell runspace (i.e. the PSSession in case of remote connections ) created during the execution and returns the runspaceID as the result of the operation. Actually the PowerShell runspace is saved in the OO session and can be used in other operations using the runspaceID result of previous operation.\nDefault value\: false\n    enablePiping - If true the operation enables piping the way PowerShell does. This input should be used only when keepSessionAlive input is true. First time the piped objects are null and the scope is to save the objects resulted from the PowerShell script execution. Next time the piped objects can be refered in the script as "$_" objects.\nDefault value\: false\nExample\: First, run "Get-Service" script with enablePiping\=true and keepSessionAlive\=true, then run the script  "Select-Object -property name,displayname,status|where-object {$_.Name -lt "C"}" with enablePiping\=true keepSessionAlive\=true. Observe the use of "$_".\n    runspaceID - If not empty, the operation will search the OO session for keys which equal the runspaceID. If the operation finds the runspace specified by the runspaceID it tries to use it and does not create another PowerShell runspace with provided inputs. If the runspace exists but is broken or unavailable the operation uses its authentication parameters and tries to reconnect and recreate the PowerShell runspace. Please note that the operation will use the connection parameters of the runspace identified by runspaceID, not the values provided as user inputs. The operation will take into consideration the connection inputs (i.e. host, username, password, authType, useSSL, etc.) provided by user only if the runspaceID does not exist in the OO session.\n    modules - A list of PowerShell modules to load after the PowerShell connection is established. Each value from the list specifies the name of the module to import. Enter the name of the module or the name of a file in the module, such as a .psd1, .psm1, .dll, or ps1 file. File paths are optional. Wildcards are not permitted. Specify only the module name whenever possible. When you specify a file name, only the members that are implemented in that file are imported. If the module contains other files, they are not imported, and you might be missing important members of the module. The list of modules should be separated by comma "," delimiter.\nExample\: FailoverClusters\n    snapins - A list of PowerShell snapins to load after the PowerShell connection is established. Each value from the list specifies the name of a registered snapin (i.e. the Name, not the AssemblyName or ModuleName).\nExample\: Microsoft.Exchange.Management.PowerShell.E2010\n    script - The script to execute on the PowerShell host. If you want to execute a script from file just provide the file path. Check the notes section for security implications of using this input.\nExample\:c\:\\PowerShellScripts\\GetHost.ps1\n    cmdlet - The name of the PowerShell cmdlet to invoke. If the cmdlet has additional parameters, please provide them as inputs to the operation. If the parameter has the same name as one of the operation's inputs just prefix it with "_". This input is intended to be used together with the PowerShell wizard so please use the script input whenever it's possible.\n    returnTable - If true, the operation will return a table containing a row for each PSObject that the script emits. The table's columns represent the properties of these PSObjects, in the propertyName<delimiter>propertyValue format. If false the operation returns a string representation of the result similar to the output from the PowerShell console.\nDefault value\: false\n    delimiter - The delimiter used to separate each property name from the property value in the output table.\nDefault value\: "\:".\n    colDelimiter - The delimiter used to separate columns in the output table.\nDefault value\: ",".\n    rowDelimiter - The delimiter used to separate rows in the output table.\nDefault value\: newline.\n    hideResults - If this input is added and set to true, the "script", "stdout" and "warnings" results will be hidden. In case of operation failure the "returnResult" will no longer contain the Powershell exception stack-trace details, but the generic message\: "Could not execute powershell command". To use this input you need to manually add it from Studio Inputs tab of the operation, by clicking on the \u201CAdd Input\u201D button.\nValid values\: true, false\nDefault value\: false\n    localPSRemoting - If this input is added and set to \u2018true\u2019 the operation will use remote impersonation on the local IP address (localhost/loopback) and PowerShell remoting on the same address to execute the script. In this case the credentials under which the script will run must be provided through the \u201Cusername\u201D and \u201Cpassword\u201D inputs. The \u201Chostname\u201D input should be the local ip address or the localhost/loopback address. In case the \u201Chostname\u201D it is left empty the \u2018localhost\u2019 address will be used by default. To use this input you need to manually add it from Studio Inputs tab of the operation, by clicking on the \u201CAdd Input\u201D button.\nValid values\: true, false\nDefault value\: false\n\nResults\:\n    returnResult - The result of the script execution formatted as table or string depending on the returnTable input value as described above. In case of operation failure and "hideResults" is set to true, then this output will no longer contain the powershell exception stacktrace details.\n    script - The actual PowerShell script that was run. This result might be useful when piping is enabled or you want to know exactly the script that was sent to be run on the PowerShell host. Please note that the operation adds "Out-String" command to the end of your script if returnTable input is set to false. This output will be hidden if "hideResults" input is set to true.\n    objectsCount - The number of the PowerShell objects resulted from script execution (e.g. Get-Service will return the number of services found on the target host). This input is relevant only when returnTable is set to true. Otherwise, the value of this result will always be one, because the script returns a string message.\n    warnings - A list of warnings that the cmdlets emit. If the cmdlets were executed without warnings, then this result will be an empty string. This output will be hidden if "hideResults" input is set to true.\n    runspaceID - The runspace ID of the PowerShell runspace created during the execution of the operation.\n    stdout - The result of the commands that succeeded in case the operation fails. In case of operation failure this output will be hidden if "hideResults" input is set to true.\n\nResponses\:\n    success - The Powershell script or cmdlet was executed successfully.\n    failure - The command could not be executed.\n\nNotes\:\n1. In order to enable PowerShell scripts execution, run the following command\: Set-ExecutionPolicy RemoteSigned\n2. When interacting with a Microsoft Exchange server, please use the generic Powershell operation available in the Business Application content pack, under /Library/Operations/Exchange/<version specific> folder, instead of loading the Exchange snap-in to this Powershell Script operation. This is a Microsoft Exchange design (http\://www.get-exchange.info/2012/12/30/powershell-scripting-for-exchange-server-some-tips/)\n3. If the "hideResults" is set to false the "script" output will be added to the operation's output in which case the exact script that was executed will be displayed. Displaying the script could be a security risk when encrypted variables (which could be the sensitive data) are passed and referenced in the script, as they will be displayed unobfuscated. Also in case of operation failure the "stdout", "warnings" and "returnResults" outputs could contain the script with unobfuscated sensitive variables in it.\n4. The \u201ClocalPSRemoting\u201D input provides a workaround/alternative to PowerShell impersonation on localhost. It enables the operation to run the script under different users on the local machine.\n5. Use the 'script' input with caution as it can expose the target system to security risks. By exposing the script input as a prompt to the user, it will enable the user to execute any powershell script on the target system taking into account the permissions of the credentials given as inputs.\n6. When keepSessionAlive is set to true and the operation is left to run for many a long time (e.g. hours), the RAS/worker service can crash with an OutOfMemory error. This is expected because while the session is kept open, data accumulates in memory which is released only after the operation completes. To address this issue check HPE OO Administrator Guide on how to increase RAS/worker memory.\n</pre>
+6bf638a8-875f-4dc0-8e76-24829d333ef8.description=Flow Name \: 12505_dbFlowToFetchNodeSpecificInputs\n\nThis flow is to fetch all the required node specific details from the data base for all the regional centrals.\n\nInputs Required \n\nDBServerName\t\: The database server name/IP where the target database is present.\ntargetList\t\: Target server whos details need to be fetched.\nUsername\t\: Username of the database. \nPassword\t\: Password of the database.\ncustomerName\t\: Coustomer name which the target server belongs to.\n\nOutput \:\n\nThis flow will return the set of all the details onboarded for the selected target server from the node specific table present in regional database.\n
+6bf638a8-875f-4dc0-8e76-24829d333ef8.faba48eb-809d-466e-833f-f787c17c95d1.description=<pre>\nThis operation does not do anything. It can be used to filter flow variables by defining them as inputs and filtering them in the Results tab.\n\nInputs\:\n    field1 \u2013 An optional input that can be used for filtering flow variables.\n    field2 \u2013 An optional input that can be used for filtering flow variables.\n    field3 \u2013 An optional input that can be used for filtering flow variables.\n    field4 \u2013 An optional input that can be used for filtering flow variables.\n\nResults\:\n    returnResult - This is the primary output. It contains the value of  "field1" as it was specified at input or when filtered. \n\nResponses\:\n    success - The operation completed as stated in the description.\n</pre>
+]]></descriptionCdata>
+  <annotation>6bf638a8-875f-4dc0-8e76-24829d333ef8.description</annotation>
+  <name>12505_dbFlowToFetchNodeSpecificInputs</name>
+  <categories/>
+  <inputs>
+    <staticBinding id="508660bf-1088-468e-ae45-678f6ba06581">
+      <annotation></annotation>
+      <toContextKey></toContextKey>
+      <fromContextKey>HPOODatabaseServer</fromContextKey>
+      <assignFromContext>false</assignFromContext>
+      <assignToContext>false</assignToContext>
+      <inputType>STRING</inputType>
+      <isList>false</isList>
+      <required>false</required>
+      <isPersisted>true</isPersisted>
+      <inputSymbol>DBServerName</inputSymbol>
+      <listDelimiter>,</listDelimiter>
+      <value></value>
+      <record>false</record>
+    </staticBinding>
+    <staticBinding id="2038a236-8524-4b79-a9ae-9265abef5eb0">
+      <annotation></annotation>
+      <assignFromContext>false</assignFromContext>
+      <assignToContext>false</assignToContext>
+      <inputType>STRING</inputType>
+      <isList>false</isList>
+      <required>false</required>
+      <isPersisted>true</isPersisted>
+      <inputSymbol>Platform</inputSymbol>
+      <listDelimiter>,</listDelimiter>
+      <value></value>
+      <record>false</record>
+    </staticBinding>
+    <staticBinding id="71be658d-5d31-40a6-bda8-58d5f5e1dec7">
+      <annotation></annotation>
+      <assignFromContext>false</assignFromContext>
+      <assignToContext>false</assignToContext>
+      <inputType>STRING</inputType>
+      <isList>false</isList>
+      <required>false</required>
+      <isPersisted>true</isPersisted>
+      <inputSymbol>targetList</inputSymbol>
+      <listDelimiter>,</listDelimiter>
+      <value></value>
+      <record>false</record>
+    </staticBinding>
+    <staticBinding id="f4539b87-adfa-4a3d-b909-6f6a4c7fd8cb">
+      <annotation></annotation>
+      <toContextKey></toContextKey>
+      <assignFromContext>false</assignFromContext>
+      <assignToContext>false</assignToContext>
+      <inputType>STRING</inputType>
+      <isList>false</isList>
+      <required>false</required>
+      <isPersisted>true</isPersisted>
+      <inputSymbol>Username</inputSymbol>
+      <listDelimiter>,</listDelimiter>
+      <value></value>
+      <record>false</record>
+    </staticBinding>
+    <staticBinding id="94927e19-1661-457f-b74b-19054c2994ee">
+      <annotation></annotation>
+      <toContextKey></toContextKey>
+      <assignFromContext>false</assignFromContext>
+      <assignToContext>false</assignToContext>
+      <inputType>ENCRYPTED</inputType>
+      <isList>false</isList>
+      <required>false</required>
+      <isPersisted>true</isPersisted>
+      <inputSymbol>Password</inputSymbol>
+      <listDelimiter>,</listDelimiter>
+      <value></value>
+      <record>false</record>
+    </staticBinding>
+    <staticBinding id="92f068a8-a0ef-40ca-87bc-22ef02b4cd22">
+      <annotation></annotation>
+      <assignFromContext>false</assignFromContext>
+      <assignToContext>false</assignToContext>
+      <inputType>STRING</inputType>
+      <isList>false</isList>
+      <required>false</required>
+      <isPersisted>true</isPersisted>
+      <inputSymbol>customerName</inputSymbol>
+      <listDelimiter>,</listDelimiter>
+      <value></value>
+      <record>false</record>
+    </staticBinding>
+  </inputs>
+  <possibleResponses>
+    <opResponse id="4803f62c-5ad8-4deb-ba8f-64edaef60520">
+      <annotation></annotation>
+      <name>success</name>
+      <isDefault>true</isDefault>
+      <onFailure>false</onFailure>
+      <type>RESOLVED</type>
+      <matchRules/>
+    </opResponse>
+    <opResponse id="4f29a883-c623-4c45-9119-85d92a09e2a7">
+      <annotation></annotation>
+      <name>failure</name>
+      <isDefault>false</isDefault>
+      <onFailure>true</onFailure>
+      <type>ERROR</type>
+      <matchRules/>
+    </opResponse>
+  </possibleResponses>
+  <availableResultExpressions>
+    <expression id="d1ee71a8-c110-4d64-925b-eef4ccc93a52">
+      <annotation></annotation>
+      <name>cpuThreshold</name>
+      <fieldName>cpuThreshold</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="bd6971e5-1b82-4483-ab92-544376c0da5f">
+      <annotation></annotation>
+      <name>cpuToMail</name>
+      <fieldName>cpuToMail</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="31dccc5f-c5ba-4c29-93ba-08328d9a9f06">
+      <annotation></annotation>
+      <name>customerName</name>
+      <fieldName>customerName</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="48d098c5-b3f2-4e60-8f24-48fcf3fa2c51">
+      <annotation></annotation>
+      <name>diskThreshold</name>
+      <fieldName>diskThreshold</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="36fce17f-c4ec-4063-abd7-b8e4a0e44b00">
+      <annotation></annotation>
+      <name>diskToMail</name>
+      <fieldName>diskToMail</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="add8ed23-432a-46ea-b7f4-c2cf30188900">
+      <annotation></annotation>
+      <name>fromMail</name>
+      <fieldName>fromMail</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="4a156b2c-a334-47c8-9ee5-af31d91e3bb0">
+      <annotation></annotation>
+      <name>hypervisorIp</name>
+      <fieldName>hypervisorIp</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="65a25f15-20de-42ee-851e-5f24d69c38cd">
+      <annotation></annotation>
+      <name>hypervisorType</name>
+      <fieldName>hypervisorType</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="79ba6d28-07a3-4044-903b-a0e157ba9fc8">
+      <annotation></annotation>
+      <name>memThreshold</name>
+      <fieldName>memThreshold</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="433e6f26-fe48-459a-a271-74699b7dad28">
+      <annotation></annotation>
+      <name>memToMail</name>
+      <fieldName>memToMail</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="f40cb6ec-66cd-4bae-b7e6-2ba26b6d244e">
+      <annotation></annotation>
+      <name>region</name>
+      <fieldName>region</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="d8aaab63-e6cf-4e87-bd7a-ecffe830a73b">
+      <annotation></annotation>
+      <name>requiredInputs</name>
+      <fieldName>requiredInputs</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="31b19f21-755d-4c5b-aa8b-30a575afbd01">
+      <annotation></annotation>
+      <name>serverDownToMail</name>
+      <fieldName>serverDownToMail</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="4e403fdf-5e68-4bd7-858d-6eb32d736cdd">
+      <annotation></annotation>
+      <name>serviceTomail</name>
+      <fieldName>serviceToMail</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="7187478f-717e-43d9-b3a8-3cbb70f790ef">
+      <annotation></annotation>
+      <name>smtpServer</name>
+      <fieldName>smtpServer</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="cbe4c1be-6ebc-4e6a-b0ae-3be399409a04">
+      <annotation></annotation>
+      <name>targetList</name>
+      <fieldName>targetList</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+    <expression id="2ceadf54-893d-4a09-9974-c8a611cee5e1">
+      <annotation></annotation>
+      <name>temServerIp</name>
+      <fieldName>temServerIp</fieldName>
+      <sourceType>RAWRESULT</sourceType>
+      <filters/>
+    </expression>
+  </availableResultExpressions>
+  <resultExpression id="411257d8-4642-426c-b8da-f9e84fd70767">
+    <annotation></annotation>
+    <name>FailureMessage</name>
+    <fieldName>FailureMessage</fieldName>
+    <sourceType>RAWRESULT</sourceType>
+    <filters/>
+  </resultExpression>
+  <iconSpec id="94ffec1a-593c-4e3a-8992-a334d460b3fe">
+    <baseIcon>flow.png</baseIcon>
+    <basePath>System</basePath>
+    <readOnly>false</readOnly>
+    <layers/>
+  </iconSpec>
+  <callouts/>
+  <checkPointFlow>true</checkPointFlow>
+  <compatibleRuntimeContext>false</compatibleRuntimeContext>
+  <historyCheckPointFlow>true</historyCheckPointFlow>
+  <steps>
+    <step id="faba48eb-809d-466e-833f-f787c17c95d1">
+      <annotation>6bf638a8-875f-4dc0-8e76-24829d333ef8.faba48eb-809d-466e-833f-f787c17c95d1.description</annotation>
+      <name>Fetch Db port</name>
+      <bounds>
+        <x>201.0</x>
+        <y>265.0</y>
+      </bounds>
+      <layer>-1</layer>
+      <hideInbound>false</hideInbound>
+      <iconSpec id="077223f1-6259-4ba7-a9a2-a153914587ef">
+        <baseIcon>display_report.png</baseIcon>
+        <basePath>Utilities/</basePath>
+        <readOnly>false</readOnly>
+        <layers/>
+      </iconSpec>
+      <addResultToRunContext>false</addResultToRunContext>
+      <isCriticalStep>false</isCriticalStep>
+      <isNonBlocking>false</isNonBlocking>
+      <isParallelStep>false</isParallelStep>
+      <isSingleResponse>false</isSingleResponse>
+      <recordInHistory>false</recordInHistory>
+      <recordRawOutput>true</recordRawOutput>
+      <recordPrimaryOutput>true</recordPrimaryOutput>
+      <checkPointStep>true</checkPointStep>
+      <historyCheckPointStep>true</historyCheckPointStep>
+      <scriptResultStep>false</scriptResultStep>
+      <userPrompt></userPrompt>
+      <bindings>
+        <staticBinding id="ac3f764f-f531-4fab-b2b8-0b3dba0292a4">
+          <annotation></annotation>
+          <fromContextKey>DBPort</fromContextKey>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>dbPort</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+      </bindings>
+      <transitions>
+        <transition id="581e88fe-3f3f-485f-b9e5-657cd4245f5c">
+          <annotation></annotation>
+          <name>if success</name>
+          <command>NEXT</command>
+          <linkMode>false</linkMode>
+          <responseSymbol>success</responseSymbol>
+          <shouldHandoff>false</shouldHandoff>
+          <transitionValue>0.0</transitionValue>
+          <destination>
+            <refId>d66b5d9c-fc62-4f69-b49f-abdf5fa42b3e</refId>
+          </destination>
+          <source>
+            <refId>faba48eb-809d-466e-833f-f787c17c95d1</refId>
+          </source>
+          <positions>
+            <point>
+              <x>260.0</x>
+              <y>274.0</y>
+            </point>
+            <point>
+              <x>469.0</x>
+              <y>298.0</y>
+            </point>
+          </positions>
+          <labelPosition>
+            <x>333.0</x>
+            <y>0.0</y>
+          </labelPosition>
+        </transition>
+      </transitions>
+      <properties/>
+      <opRef>
+        <refId>ddd79f22-8b1e-4605-88d5-d912bb2da2b9</refId>
+      </opRef>
+      <assignments>
+        <flowVariableAssignment id="7f5eb873-d87b-4655-a052-1794a6a56fae">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>dbPort</contextKey>
+          <expression id="1988bee0-5c5a-4a1d-a2d2-166375e21a42">
+            <annotation></annotation>
+            <name>Input: dbPort</name>
+            <fieldName>dbPort</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters>
+              <stripWhitespaceFilter id="ddf81f49-6427-4ed3-9f84-30bafdec554c">
+                <annotation></annotation>
+                <name>Strip Whitespace</name>
+              </stripWhitespaceFilter>
+            </filters>
+          </expression>
+        </flowVariableAssignment>
+      </assignments>
+      <throttleSize>0</throttleSize>
+    </step>
+    <step id="d66b5d9c-fc62-4f69-b49f-abdf5fa42b3e">
+      <annotation>6bf638a8-875f-4dc0-8e76-24829d333ef8.d66b5d9c-fc62-4f69-b49f-abdf5fa42b3e.description</annotation>
+      <name>toFetchRemediationSequence</name>
+      <bounds>
+        <x>419.0</x>
+        <y>264.0</y>
+      </bounds>
+      <layer>-1</layer>
+      <hideInbound>false</hideInbound>
+      <iconSpec id="d66d1563-f57c-4005-b6fa-c7b55b8211fa">
+        <baseIcon>PowerShell.png</baseIcon>
+        <basePath>/Operating System/</basePath>
+        <readOnly>false</readOnly>
+        <layers/>
+      </iconSpec>
+      <addResultToRunContext>false</addResultToRunContext>
+      <isCriticalStep>false</isCriticalStep>
+      <isNonBlocking>false</isNonBlocking>
+      <isParallelStep>false</isParallelStep>
+      <isSingleResponse>false</isSingleResponse>
+      <recordInHistory>false</recordInHistory>
+      <recordRawOutput>true</recordRawOutput>
+      <recordPrimaryOutput>true</recordPrimaryOutput>
+      <checkPointStep>true</checkPointStep>
+      <historyCheckPointStep>true</historyCheckPointStep>
+      <scriptResultStep>false</scriptResultStep>
+      <userPrompt></userPrompt>
+      <scriptlet id="b1d4bd6e-b6dd-4f6d-87e5-fecab5b600bc">
+        <annotation></annotation>
+        <name>Step toFetchRemediationSequence in Flow 12505_dbFlowToFetchNodeSpecificInputs (1371e150-b085-48ab-ae40-82e1abdde3c7)</name>
+        <script>Inputs = scriptletContext.get(&quot;requiredInputs&quot;);
+
+var targetList = Inputs.split(&quot;,&quot;)[0];
+var customerName = Inputs.split(&quot;,&quot;)[1];
+var region = Inputs.split(&quot;,&quot;)[2];
+var diskThreshold = Inputs.split(&quot;,&quot;)[3];
+var cpuThreshold = Inputs.split(&quot;,&quot;)[4];
+var memThreshold = Inputs.split(&quot;,&quot;)[5];
+var hypervisorType = Inputs.split(&quot;,&quot;)[6];
+var hypervisorIp = Inputs.split(&quot;,&quot;)[7];
+var temServerIp	 = Inputs.split(&quot;,&quot;)[8];
+var smtpServer = Inputs.split(&quot;,&quot;)[9];
+var fromMail = Inputs.split(&quot;,&quot;)[10];
+var cpuToMail = Inputs.split(&quot;,&quot;)[11];
+var memToMail = Inputs.split(&quot;,&quot;)[12];
+var diskToMail = Inputs.split(&quot;,&quot;)[13];
+var serviceToMail = Inputs.split(&quot;,&quot;)[14];
+var serverDownToMail = Inputs.split(&quot;,&quot;)[15];
+
+
+scriptletContext.put(&quot;targetList&quot;,targetList);
+scriptletContext.put(&quot;customerName&quot;,customerName);
+scriptletContext.put(&quot;region&quot;,region);
+scriptletContext.put(&quot;diskThreshold&quot;,diskThreshold);
+scriptletContext.put(&quot;cpuThreshold&quot;,cpuThreshold);
+scriptletContext.put(&quot;memThreshold&quot;,memThreshold);
+scriptletContext.put(&quot;hypervisorType&quot;,hypervisorType);
+scriptletContext.put(&quot;hypervisorIp&quot;,hypervisorIp);
+scriptletContext.put(&quot;temServerIp&quot;,temServerIp);
+scriptletContext.put(&quot;smtpServer&quot;,smtpServer);
+scriptletContext.put(&quot;fromMail&quot;,fromMail);
+scriptletContext.put(&quot;cpuToMail&quot;,cpuToMail);
+scriptletContext.put(&quot;memToMail&quot;,memToMail);
+scriptletContext.put(&quot;diskToMail&quot;,diskToMail);
+scriptletContext.put(&quot;serviceToMail&quot;,serviceToMail);
+scriptletContext.put(&quot;serverDownToMail&quot;,serverDownToMail);</script>
+        <type>NASHORN</type>
+      </scriptlet>
+      <bindings>
+        <staticBinding id="09da52a3-c473-4407-9fbb-3f2f91a314fb">
+          <annotation></annotation>
+          <toContextKey></toContextKey>
+          <fromContextKey>hostName</fromContextKey>
+          <assignFromContext>false</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>host</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value>localhost</value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="610086fa-e079-44b9-8868-e7aa32dd034e">
+          <annotation></annotation>
+          <fromContextKey>GlobalAutoHealing/dbName_RX</fromContextKey>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>dbName</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="d0b9dddf-2440-4f3c-a5ae-06962a9b2a09">
+          <annotation></annotation>
+          <assignFromContext>false</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>script</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value>$sqlServer = &apos;${DBServerName}&apos;
+$dbPort=&apos;${dbPort}&apos;
+$dbUserName = &apos;${Username}&apos;
+$dbPassword = &apos;${Password}&apos;
+$nodeName = &apos;${targetList}&apos;
+$customerName=&apos;${customerName}&apos;
+$dbName = &apos;${dbName}&apos;
+$Platform=&apos;${Platform}&apos;
+
+Function getData
+{
+
+#Write-Host &quot;Connecting to database&quot;
+$sqlConnection = New-Object System.Data.SqlClient.SqlConnection
+$sqlCommand = New-Object System.Data.SqlClient.SqlCommand
+$sqlAdapter = New-Object System.Data.SqlClient.SqlDataAdapter
+$sqlDataset = New-Object System.Data.DataSet
+$sqlConnection.ConnectionString =&quot;server=$sqlServer,$dbPort; database=$dbName; User Id=$dbUserName; password=$dbPassword;&quot;
+
+ 
+
+Try
+{
+$sqlConnection.Open()
+#Write-Host &quot;Database is connected&quot;
+}
+catch
+{
+return &quot;Error: Failed while connecting to database&quot;
+}
+
+ 
+
+
+#### checking entry ####
+$sqlQuery = &quot;select * from NodeSpecificTable where NodeName=&apos;$nodeName&apos; AND CustomerName =&apos;$customerName&apos;&quot;
+$sqlCommand.CommandText = $sqlQuery
+$sqlAdapter.selectcommand = $sqlCommand
+$sqlAdapter.selectcommand.connection = $SQLConnection
+$sqlDataset = New-Object System.Data.DataSet
+$sqlAdapter.Fill($sqlDataset) | out-null
+
+ 
+
+$dbNodeName= $sqlDataset.Tables[0].NodeName
+
+ 
+
+if($dbNodeName.count -eq 1)
+{
+$NodeName= $sqlDataset.Tables[0].NodeName
+$CustomerName= $sqlDataset.Tables[0].CustomerName
+$region= $sqlDataset.Tables[0].Region
+$Diskthreshold= $sqlDataset.Tables[0].Diskthreshold
+$CPUthreshold= $sqlDataset.Tables[0].CPUthreshold
+$Memorythreshold= $sqlDataset.Tables[0].Memthreshold
+$HypervisorType= $sqlDataset.Tables[0].HypervisorType
+$HypervisorIP= $sqlDataset.Tables[0].HypervisorIP
+$TemServerIP= $sqlDataset.Tables[0].TemServerIP
+$SMTPserver= $sqlDataset.Tables[0].SMTPserver
+$FromMailId= $sqlDataset.Tables[0].FromMailId
+$cpuTomail= $sqlDataset.Tables[0].CpuTomailId
+$memTomail= $sqlDataset.Tables[0].MemTomailId
+$diskTomail= $sqlDataset.Tables[0].DiskTomailId
+$serviceTomail= $sqlDataset.Tables[0].ServiceTomailId
+$serverDownTomail= $sqlDataset.Tables[0].ServerDownTomailId
+
+return &quot;$NodeName,$CustomerName,$region,$Diskthreshold,$CPUthreshold,$Memorythreshold,$HypervisorType,$HypervisorIP,$TemServerIP,$SMTPserver,$FromMailId,$cpuTomail,$memTomail,$diskTomail,$serviceTomail,$serverDownTomail&quot;
+
+}
+elseif($dbNodeName.count -gt 1)
+{
+return &quot;Error: Duplicate entries present&quot;
+}
+else
+{
+return &quot;Error: No entry present&quot;
+}
+
+#closing sql connection
+$sqlConnection.Close()
+
+ 
+
+}
+
+$val=getData
+
+if($val -imatch &quot;Error: No entry present&quot;)
+{
+write-host &quot;Not onboarded&quot;
+
+Function getdataWildcard
+{
+
+#Write-Host &quot;Connecting to database&quot;
+$sqlConnection = New-Object System.Data.SqlClient.SqlConnection
+$sqlCommand = New-Object System.Data.SqlClient.SqlCommand
+$sqlAdapter = New-Object System.Data.SqlClient.SqlDataAdapter
+$sqlDataset = New-Object System.Data.DataSet
+$sqlConnection.ConnectionString =&quot;server=$sqlServer,$dbPort; database=$dbName; User Id=$dbUserName; password=$dbPassword;&quot;
+
+ 
+
+Try
+{
+$sqlConnection.Open()
+#Write-Host &quot;Database is connected&quot;
+}
+catch
+{
+return &quot;Error: Failed while connecting to database&quot;
+}
+
+ 
+
+
+#### checking entry ####
+$sqlQuery = &quot;select * from WildCardNodeSpecificTable where CustomerName =&apos;$customerName&apos; AND Platform = &apos;$Platform&apos;&quot;
+$sqlCommand.CommandText = $sqlQuery
+$sqlAdapter.selectcommand = $sqlCommand
+$sqlAdapter.selectcommand.connection = $SQLConnection
+$sqlDataset = New-Object System.Data.DataSet
+$sqlAdapter.Fill($sqlDataset) | out-null
+
+ 
+
+$dbCustomerName= $sqlDataset.Tables[0].CustomerName
+
+ 
+
+if($dbCustomerName.count -eq 1)
+{
+$CustomerName= $sqlDataset.Tables[0].CustomerName.Trim()
+$region= $sqlDataset.Tables[0].Region.Trim()
+$Diskthreshold= $sqlDataset.Tables[0].Diskthreshold.Trim()
+$CPUthreshold= $sqlDataset.Tables[0].CPUthreshold.Trim()
+$Memorythreshold= $sqlDataset.Tables[0].Memthreshold.Trim()
+$HypervisorType= $sqlDataset.Tables[0].HypervisorType.Trim()
+$HypervisorIP= $sqlDataset.Tables[0].HypervisorIP.Trim()
+$TemServerIP= $sqlDataset.Tables[0].TemServerIP.Trim()
+$SMTPserver= $sqlDataset.Tables[0].SMTPserver.Trim()
+$FromMailId= $sqlDataset.Tables[0].FromMailId.Trim()
+$cpuTomail= $sqlDataset.Tables[0].CpuTomailId.Trim()
+$memTomail= $sqlDataset.Tables[0].MemTomailId.Trim()
+$diskTomail= $sqlDataset.Tables[0].DiskTomailId.Trim()
+$serviceTomail= $sqlDataset.Tables[0].ServiceTomailId.Trim()
+$serverDownTomail= $sqlDataset.Tables[0].ServerDownTomailId.Trim()
+
+$nodeName=&apos;NA&apos;
+
+return &quot;$nodeName,$CustomerName,$region,$Diskthreshold,$CPUthreshold,$Memorythreshold,$HypervisorType,$HypervisorIP,$TemServerIP,$SMTPserver,$FromMailId,$cpuTomail,$memTomail,$diskTomail,$serviceTomail,$serverDownTomail&quot;
+
+}
+elseif($dbCustomerName.count -gt 1)
+{
+return &quot;Error: Duplicate entries present&quot;
+}
+else
+{
+return &quot;Error: No entry present&quot;
+}
+
+#closing sql connection
+$sqlConnection.Close()
+
+ 
+
+}
+
+$val=getdataWildcard
+
+
+if($val -imatch &quot;Error: No entry present&quot;)
+{
+$customerName=&apos;Global&apos;
+write-host &quot;Not onboarded going for Global&quot;
+
+Function getdataWildcardglobal
+{
+
+#Write-Host &quot;Connecting to database&quot;
+$sqlConnection = New-Object System.Data.SqlClient.SqlConnection
+$sqlCommand = New-Object System.Data.SqlClient.SqlCommand
+$sqlAdapter = New-Object System.Data.SqlClient.SqlDataAdapter
+$sqlDataset = New-Object System.Data.DataSet
+$sqlConnection.ConnectionString =&quot;server=$sqlServer,$dbPort; database=$dbName; User Id=$dbUserName; password=$dbPassword;&quot;
+
+ 
+
+Try
+{
+$sqlConnection.Open()
+#Write-Host &quot;Database is connected&quot;
+}
+catch
+{
+return &quot;Error: Failed while connecting to database&quot;
+}
+
+ 
+
+
+#### checking entry ####
+$sqlQuery = &quot;select * from WildCardNodeSpecificTable where CustomerName =&apos;$customerName&apos;&quot;
+$sqlCommand.CommandText = $sqlQuery
+$sqlAdapter.selectcommand = $sqlCommand
+$sqlAdapter.selectcommand.connection = $SQLConnection
+$sqlDataset = New-Object System.Data.DataSet
+$sqlAdapter.Fill($sqlDataset) | out-null
+
+ 
+
+$dbCustomerName= $sqlDataset.Tables[0].CustomerName
+
+ 
+
+if($dbCustomerName.count -eq 1)
+{
+$CustomerName= $sqlDataset.Tables[0].CustomerName.Trim()
+$region= $sqlDataset.Tables[0].Region.Trim()
+$Diskthreshold= $sqlDataset.Tables[0].Diskthreshold.Trim()
+$CPUthreshold= $sqlDataset.Tables[0].CPUthreshold.Trim()
+$Memorythreshold= $sqlDataset.Tables[0].Memthreshold.Trim()
+$HypervisorType= $sqlDataset.Tables[0].HypervisorType.Trim()
+$HypervisorIP= $sqlDataset.Tables[0].HypervisorIP.Trim()
+$TemServerIP= $sqlDataset.Tables[0].TemServerIP.Trim()
+$SMTPserver= $sqlDataset.Tables[0].SMTPserver.Trim()
+$FromMailId= $sqlDataset.Tables[0].FromMailId.Trim()
+$cpuTomail= $sqlDataset.Tables[0].CpuTomailId.Trim()
+$memTomail= $sqlDataset.Tables[0].MemTomailId.Trim()
+$diskTomail= $sqlDataset.Tables[0].DiskTomailId.Trim()
+$serviceTomail= $sqlDataset.Tables[0].ServiceTomailId.Trim()
+$serverDownTomail= $sqlDataset.Tables[0].ServerDownTomailId.Trim()
+
+$nodeName=&apos;NA&apos;
+
+return &quot;$nodeName,$CustomerName,$region,$Diskthreshold,$CPUthreshold,$Memorythreshold,$HypervisorType,$HypervisorIP,$TemServerIP,$SMTPserver,$FromMailId,$cpuTomail,$memTomail,$diskTomail,$serviceTomail,$serverDownTomail&quot;
+
+}
+elseif($dbCustomerName.count -gt 1)
+{
+return &quot;Error: Duplicate entries present&quot;
+}
+else
+{
+return &quot;Error: No entry present&quot;
+}
+
+#closing sql connection
+$sqlConnection.Close()
+
+ 
+
+}
+
+$val=getdataWildcardglobal
+}
+}
+
+return $val</value>
+          <record>false</record>
+        </staticBinding>
+      </bindings>
+      <transitions>
+        <transition id="8fbe03bf-7fd7-470e-92fc-678f36cab748">
+          <annotation></annotation>
+          <name>if success</name>
+          <command>NEXT</command>
+          <linkMode>false</linkMode>
+          <responseSymbol>success</responseSymbol>
+          <shouldHandoff>false</shouldHandoff>
+          <transitionValue>0.0</transitionValue>
+          <destination>
+            <refId>39b32a1a-e790-4352-97e2-999f29bdd05e</refId>
+          </destination>
+          <source>
+            <refId>d66b5d9c-fc62-4f69-b49f-abdf5fa42b3e</refId>
+          </source>
+          <positions>
+            <point>
+              <x>350.0</x>
+              <y>244.0</y>
+            </point>
+            <point>
+              <x>470.0</x>
+              <y>124.0</y>
+            </point>
+          </positions>
+          <labelPosition>
+            <x>333.0</x>
+            <y>0.0</y>
+          </labelPosition>
+        </transition>
+        <transition id="2e32562a-37c2-4dbb-97a4-0620e40a38cc">
+          <annotation></annotation>
+          <name>if failure</name>
+          <command>NEXT</command>
+          <linkMode>false</linkMode>
+          <responseSymbol>failure</responseSymbol>
+          <shouldHandoff>false</shouldHandoff>
+          <transitionValue>0.0</transitionValue>
+          <destination>
+            <refId>e1d12e40-e02f-4bfb-ab38-19f146d57c8c</refId>
+          </destination>
+          <source>
+            <refId>d66b5d9c-fc62-4f69-b49f-abdf5fa42b3e</refId>
+          </source>
+          <positions>
+            <point>
+              <x>350.0</x>
+              <y>244.0</y>
+            </point>
+            <point>
+              <x>488.0</x>
+              <y>481.0</y>
+            </point>
+          </positions>
+          <labelPosition>
+            <x>333.0</x>
+            <y>0.0</y>
+          </labelPosition>
+        </transition>
+      </transitions>
+      <properties/>
+      <opRef>
+        <refId>f0b2afd2-5733-47e4-80ba-7f2387cc66d5</refId>
+      </opRef>
+      <assignments>
+        <flowVariableAssignment id="979622df-b4ef-4f62-8470-a60c976576f7">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>requiredInputs</contextKey>
+          <expression id="3354ddeb-9f51-4d06-976f-e8e7d56945ea">
+            <annotation></annotation>
+            <name>Result Field: returnResult</name>
+            <fieldName>returnResult</fieldName>
+            <sourceType>RAWRESULT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="29a995d6-76e4-46bf-89a4-cb30e69adf0c">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>requiredInputs</contextKey>
+          <expression id="677c2d5b-e35b-48eb-84b9-cf3f1af0244f">
+            <annotation></annotation>
+            <name>Result Field: returnResult</name>
+            <fieldName>returnResult</fieldName>
+            <sourceType>RAWRESULT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+      </assignments>
+      <throttleSize>0</throttleSize>
+    </step>
+    <returnStep id="0d22a7da-4f88-4495-a6e4-2067fe6bf4aa">
+      <annotation></annotation>
+      <name>Resolved : success</name>
+      <bounds>
+        <x>675.0</x>
+        <y>86.0</y>
+      </bounds>
+      <layer>-1</layer>
+      <hideInbound>false</hideInbound>
+      <addResultToRunContext>false</addResultToRunContext>
+      <isCriticalStep>false</isCriticalStep>
+      <isNonBlocking>false</isNonBlocking>
+      <isParallelStep>false</isParallelStep>
+      <isSingleResponse>false</isSingleResponse>
+      <recordInHistory>false</recordInHistory>
+      <recordRawOutput>true</recordRawOutput>
+      <recordPrimaryOutput>true</recordPrimaryOutput>
+      <checkPointStep>true</checkPointStep>
+      <historyCheckPointStep>true</historyCheckPointStep>
+      <scriptResultStep>false</scriptResultStep>
+      <userPrompt></userPrompt>
+      <bindings/>
+      <transitions>
+        <transition id="e97bedb0-2111-40a2-bc96-ce67c82b047b">
+          <annotation></annotation>
+          <name>return</name>
+          <command>NEXT</command>
+          <linkMode>false</linkMode>
+          <responseSymbol>success</responseSymbol>
+          <shouldHandoff>false</shouldHandoff>
+          <transitionValue>0.0</transitionValue>
+          <destination>
+            <refId>0d22a7da-4f88-4495-a6e4-2067fe6bf4aa</refId>
+          </destination>
+          <source>
+            <refId>0d22a7da-4f88-4495-a6e4-2067fe6bf4aa</refId>
+          </source>
+          <positions/>
+        </transition>
+      </transitions>
+      <properties/>
+      <returnStepType>RESOLVED</returnStepType>
+      <assignments/>
+    </returnStep>
+    <returnStep id="e1d12e40-e02f-4bfb-ab38-19f146d57c8c">
+      <annotation></annotation>
+      <name>Error : failure</name>
+      <bounds>
+        <x>423.0</x>
+        <y>459.0</y>
+      </bounds>
+      <layer>-1</layer>
+      <hideInbound>false</hideInbound>
+      <addResultToRunContext>false</addResultToRunContext>
+      <isCriticalStep>false</isCriticalStep>
+      <isNonBlocking>false</isNonBlocking>
+      <isParallelStep>false</isParallelStep>
+      <isSingleResponse>false</isSingleResponse>
+      <recordInHistory>false</recordInHistory>
+      <recordRawOutput>true</recordRawOutput>
+      <recordPrimaryOutput>true</recordPrimaryOutput>
+      <checkPointStep>true</checkPointStep>
+      <historyCheckPointStep>true</historyCheckPointStep>
+      <scriptResultStep>false</scriptResultStep>
+      <userPrompt></userPrompt>
+      <bindings/>
+      <transitions>
+        <transition id="7e356cf8-2e18-4881-bfce-a6410be56b24">
+          <annotation></annotation>
+          <name>return</name>
+          <command>NEXT</command>
+          <linkMode>false</linkMode>
+          <responseSymbol>failure</responseSymbol>
+          <shouldHandoff>false</shouldHandoff>
+          <transitionValue>0.0</transitionValue>
+          <destination>
+            <refId>e1d12e40-e02f-4bfb-ab38-19f146d57c8c</refId>
+          </destination>
+          <source>
+            <refId>e1d12e40-e02f-4bfb-ab38-19f146d57c8c</refId>
+          </source>
+          <positions/>
+        </transition>
+      </transitions>
+      <properties/>
+      <returnStepType>ERROR</returnStepType>
+      <assignments/>
+    </returnStep>
+    <step id="39b32a1a-e790-4352-97e2-999f29bdd05e">
+      <annotation>6bf638a8-875f-4dc0-8e76-24829d333ef8.39b32a1a-e790-4352-97e2-999f29bdd05e.description</annotation>
+      <name>FlowResults</name>
+      <bounds>
+        <x>420.0</x>
+        <y>90.0</y>
+      </bounds>
+      <layer>-1</layer>
+      <hideInbound>false</hideInbound>
+      <iconSpec id="a090ce67-9a8b-45e9-9d10-eed889b8ff2a">
+        <baseIcon>display_report.png</baseIcon>
+        <basePath>Utilities/</basePath>
+        <readOnly>false</readOnly>
+        <layers/>
+      </iconSpec>
+      <addResultToRunContext>false</addResultToRunContext>
+      <isCriticalStep>false</isCriticalStep>
+      <isNonBlocking>false</isNonBlocking>
+      <isParallelStep>false</isParallelStep>
+      <isSingleResponse>false</isSingleResponse>
+      <recordInHistory>false</recordInHistory>
+      <recordRawOutput>true</recordRawOutput>
+      <recordPrimaryOutput>true</recordPrimaryOutput>
+      <checkPointStep>true</checkPointStep>
+      <historyCheckPointStep>true</historyCheckPointStep>
+      <scriptResultStep>false</scriptResultStep>
+      <userPrompt></userPrompt>
+      <bindings>
+        <staticBinding id="6ae6883b-a10e-4dd5-ba4f-ea36196dff66">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>targetList</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="ed0fcabb-95a6-486b-b740-a1bec161fa73">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>customerName</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="06cb8c25-c654-4beb-a842-787cc13cd10b">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>region</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="24996192-d1fe-4fcd-a980-c94720974559">
+          <annotation></annotation>
+          <fromContextKey>cpuThreshold</fromContextKey>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>cpuThreshold</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="d492aacc-6f9b-438e-99ed-8569411b7587">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>memThreshold</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="f4bc0be7-7dcb-476b-b620-0516bede62f3">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>diskThreshold</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="56a44024-d01a-4405-a422-82c194f1f02a">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>fromMail</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="f2b8cce8-3071-418f-93db-c9ec7e35d0c6">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>smtpServer</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="f2d86cf2-0ffd-490b-8e0c-0514c177acac">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>hypervisorType</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="6f538858-df14-4bec-a52f-519fb5c5aaf1">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>hypervisorIp</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="572b5ef4-4941-49d3-85ed-d4cebb62597b">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>temServerIp</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="55e799ec-c1e1-4937-8a60-ea3c724b65ba">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>cpuToMail</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="b38a039e-4bcc-424f-88ee-6f327c1f350b">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>memToMail</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="e0d6536b-9808-40ec-8193-8b4b84976bca">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>diskToMail</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="f031709a-5955-442a-9650-ed0d5a2ea387">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>serviceToMail</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+        <staticBinding id="69531e49-6f32-408c-9478-161419862fa6">
+          <annotation></annotation>
+          <assignFromContext>true</assignFromContext>
+          <assignToContext>false</assignToContext>
+          <inputType>STRING</inputType>
+          <isList>false</isList>
+          <required>false</required>
+          <isPersisted>true</isPersisted>
+          <inputSymbol>serverDownToMail</inputSymbol>
+          <listDelimiter>,</listDelimiter>
+          <value></value>
+          <record>false</record>
+        </staticBinding>
+      </bindings>
+      <transitions>
+        <transition id="65ed2937-20e2-47a0-a448-09c29da38b9f">
+          <annotation></annotation>
+          <name>if success</name>
+          <command>NEXT</command>
+          <linkMode>false</linkMode>
+          <responseSymbol>success</responseSymbol>
+          <shouldHandoff>false</shouldHandoff>
+          <transitionValue>0.0</transitionValue>
+          <destination>
+            <refId>0d22a7da-4f88-4495-a6e4-2067fe6bf4aa</refId>
+          </destination>
+          <source>
+            <refId>39b32a1a-e790-4352-97e2-999f29bdd05e</refId>
+          </source>
+          <positions>
+            <point>
+              <x>470.0</x>
+              <y>124.0</y>
+            </point>
+            <point>
+              <x>745.0</x>
+              <y>252.0</y>
+            </point>
+          </positions>
+          <labelPosition>
+            <x>333.0</x>
+            <y>0.0</y>
+          </labelPosition>
+        </transition>
+      </transitions>
+      <properties/>
+      <opRef>
+        <refId>ddd79f22-8b1e-4605-88d5-d912bb2da2b9</refId>
+      </opRef>
+      <assignments>
+        <flowVariableAssignment id="8eace6dd-fb18-47ad-9172-ad5f4186cc14">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>region</contextKey>
+          <expression id="4ef51431-c91f-4586-be55-f31c8de67c0f">
+            <annotation></annotation>
+            <name>Input: region</name>
+            <fieldName>region</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="04642506-d1a3-47b3-9379-5d281d52188c">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>targetList</contextKey>
+          <expression id="f63a7267-c74c-4e7b-8edf-af569fd7222b">
+            <annotation></annotation>
+            <name>Input: targetList</name>
+            <fieldName>targetList</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="c806e84c-f2d7-4182-85da-28a6c2f5e1fb">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>customerName</contextKey>
+          <expression id="e0f284b3-0ede-415d-bb2e-402f2e2e36a1">
+            <annotation></annotation>
+            <name>Input: customerName</name>
+            <fieldName>customerName</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="56ec8787-8112-4c10-ba1c-e469e8b9d96b">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>memThreshold</contextKey>
+          <expression id="2d877f64-fe03-4f98-8bde-94690ca64080">
+            <annotation></annotation>
+            <name>Input: memThreshold</name>
+            <fieldName>memThreshold</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="de07a2d9-6f07-438b-ae76-b0551900f844">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>diskThreshold</contextKey>
+          <expression id="f42d967f-8646-47f4-bca8-d664e1254d14">
+            <annotation></annotation>
+            <name>Input: diskThreshold</name>
+            <fieldName>diskThreshold</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="8e15c3c8-b97f-47ca-81a9-f3105a07d6bf">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>cpuThreshold</contextKey>
+          <expression id="673c0e62-0041-4ccd-b0c4-b6061ea8567b">
+            <annotation></annotation>
+            <name>Input: cpuThreshold</name>
+            <fieldName>cpuThreshold</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="5ebb7612-cadf-44e7-809a-2592c5df7f0e">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>fromMail</contextKey>
+          <expression id="d0c55877-67bb-4aaf-aec1-6282e9e1d9ce">
+            <annotation></annotation>
+            <name>Input: fromMail</name>
+            <fieldName>fromMail</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="f31a8b89-35f1-45c8-b43a-6b47c35c7460">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>smtpServer</contextKey>
+          <expression id="f4d677b0-affd-49ab-9921-a0930ac2b295">
+            <annotation></annotation>
+            <name>Input: smtpServer</name>
+            <fieldName>smtpServer</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="02b1e580-8a54-4610-bc2a-3a8e66859189">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>hypervisorType</contextKey>
+          <expression id="efa9d150-4074-4bf5-aa33-ee1a5d5ad3d4">
+            <annotation></annotation>
+            <name>Input: hypervisorType</name>
+            <fieldName>hypervisorType</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="cd74cb66-2039-4504-90be-a961b32125fa">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>hypervisorIp</contextKey>
+          <expression id="a88967b6-3f48-4074-8562-233cc682a9a9">
+            <annotation></annotation>
+            <name>Input: hypervisorIp</name>
+            <fieldName>hypervisorIp</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="239ff6d8-b4f9-46e7-8620-d0d69e16c54b">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>temServerIp</contextKey>
+          <expression id="68464a98-6fde-4c4c-993e-4d3fce498b50">
+            <annotation></annotation>
+            <name>Input: temServerIp</name>
+            <fieldName>temServerIp</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="e0ff0542-d052-4edb-94f7-4f755a4b0aa5">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>cpuToMail</contextKey>
+          <expression id="cddf9914-84ec-499f-a4c6-29aedb5eb3a2">
+            <annotation></annotation>
+            <name>Input: cpuToMail</name>
+            <fieldName>cpuToMail</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="dda67cc3-d8ff-4a42-8579-4c04d1d341f0">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>memToMail</contextKey>
+          <expression id="e2880a26-4aa9-4229-afec-6e0f4964b4ab">
+            <annotation></annotation>
+            <name>Input: memToMail</name>
+            <fieldName>memToMail</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="dd6b25d0-7099-42bc-976e-fa3d897f8dd3">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>diskToMail</contextKey>
+          <expression id="9dbc1385-f02a-4c02-a1eb-dfca83abef91">
+            <annotation></annotation>
+            <name>Input: diskToMail</name>
+            <fieldName>diskToMail</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="c4b7bc1a-8b2e-4506-9af8-e532858e533c">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>serviceToMail</contextKey>
+          <expression id="babbec8a-3ac9-4639-86e3-9d31b917dbfb">
+            <annotation></annotation>
+            <name>Input: serviceToMail</name>
+            <fieldName>serviceToMail</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="be5e4476-cc6a-4eb6-baf4-8a62d2434226">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_VARIABLE</assignmentTargetType>
+          <contextKey>serverDownToMail</contextKey>
+          <expression id="ac90b181-6899-4a9a-a85a-7ff05c387b06">
+            <annotation></annotation>
+            <name>Input: serverDownToMail</name>
+            <fieldName>serverDownToMail</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="24243246-0b6e-41f2-b863-dba9722dec74">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>serviceToMail</contextKey>
+          <expression id="1c42f3a5-2a54-420a-8048-7d63f1742303">
+            <annotation></annotation>
+            <name>Input: serviceToMail</name>
+            <fieldName>serviceToMail</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="b8fad432-f387-4e74-bc77-cc9d04c35715">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>diskToMail</contextKey>
+          <expression id="15438c57-23f7-4a35-b812-6fb8cd5bb42d">
+            <annotation></annotation>
+            <name>Input: diskToMail</name>
+            <fieldName>diskToMail</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="d6a52a4e-dfb9-499d-bf6d-b2f09a8c1532">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>memToMail</contextKey>
+          <expression id="ae4b8d64-37ab-4151-b849-9f414101d9a1">
+            <annotation></annotation>
+            <name>Input: memToMail</name>
+            <fieldName>memToMail</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="c913c4a4-d96c-4c86-9fcc-46c6d2d23303">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>cpuToMail</contextKey>
+          <expression id="ca8a1fa9-0005-4e3b-8db6-74f65441d04a">
+            <annotation></annotation>
+            <name>Input: cpuToMail</name>
+            <fieldName>cpuToMail</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="a70b708a-681d-40df-9881-5cfcebdec7e5">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>temServerIp</contextKey>
+          <expression id="74a51cd6-9122-4aa1-8ebe-b6e809bde7b8">
+            <annotation></annotation>
+            <name>Input: temServerIp</name>
+            <fieldName>temServerIp</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="66a8eab8-8cf5-4763-b99d-f636df06af50">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>hypervisorIp</contextKey>
+          <expression id="6471c518-7f8d-476d-a576-58b66d9362af">
+            <annotation></annotation>
+            <name>Input: hypervisorIp</name>
+            <fieldName>hypervisorIp</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="21154522-144f-4785-a876-6ead55b69b62">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>hypervisorType</contextKey>
+          <expression id="93ba5b24-8ba4-43e8-8baf-838ff18b7727">
+            <annotation></annotation>
+            <name>Input: hypervisorType</name>
+            <fieldName>hypervisorType</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="b4d7651d-a471-4836-87dc-be4e23b686f4">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>smtpServer</contextKey>
+          <expression id="a3a5ed69-017d-4feb-be0d-938b17689ec2">
+            <annotation></annotation>
+            <name>Input: smtpServer</name>
+            <fieldName>smtpServer</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="2d35d0c9-cbcf-4436-9688-96ff2ad971bd">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>fromMail</contextKey>
+          <expression id="6626fff2-dd3b-4cb1-ad88-955960a2064b">
+            <annotation></annotation>
+            <name>Input: fromMail</name>
+            <fieldName>fromMail</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="9e257f31-6032-4e06-be93-75ffbbd9a6e4">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>cpuThreshold</contextKey>
+          <expression id="a0de181a-9eb9-4296-a743-dcd64c9b8c3e">
+            <annotation></annotation>
+            <name>Input: cpuThreshold</name>
+            <fieldName>cpuThreshold</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="081d927a-5a9c-480f-a1a5-0df7ce55f28c">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>diskThreshold</contextKey>
+          <expression id="c309e7d6-9ec0-4a7c-a298-72f760f34e62">
+            <annotation></annotation>
+            <name>Input: diskThreshold</name>
+            <fieldName>diskThreshold</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="2cabebc3-1a9d-4ee6-9c28-57d19d06a106">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>memThreshold</contextKey>
+          <expression id="3fafb02a-6121-427c-b7a4-00e89875a282">
+            <annotation></annotation>
+            <name>Input: memThreshold</name>
+            <fieldName>memThreshold</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="3207746e-9ad0-430d-8d65-a2b4878d2a5b">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>customerName</contextKey>
+          <expression id="57674cbc-fd7f-4f0c-8c52-e42c5f47823d">
+            <annotation></annotation>
+            <name>Input: customerName</name>
+            <fieldName>customerName</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="e4c83fa7-8a72-4024-a6ac-618e47abe67c">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>targetList</contextKey>
+          <expression id="c110cad9-3b63-4623-bac9-15c7a1da47ea">
+            <annotation></annotation>
+            <name>Input: targetList</name>
+            <fieldName>targetList</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="9750b398-1b5c-44de-b82b-fa024727528a">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>region</contextKey>
+          <expression id="e5129dac-8dd7-48a0-b86c-469c09892375">
+            <annotation></annotation>
+            <name>Input: region</name>
+            <fieldName>region</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+        <flowVariableAssignment id="1c9cf5f0-4533-44c8-93b6-ced679f8f5ed">
+          <annotation></annotation>
+          <name>assignment</name>
+          <action>OVERWRITE</action>
+          <assignmentTargetType>FLOW_OUTPUT_FIELD</assignmentTargetType>
+          <contextKey>serverDownToMail</contextKey>
+          <expression id="a4e86e66-c57d-4a33-a166-d3d10745e73c">
+            <annotation></annotation>
+            <name>Input: serverDownToMail</name>
+            <fieldName>serverDownToMail</fieldName>
+            <sourceType>INPUT</sourceType>
+            <filters/>
+          </expression>
+        </flowVariableAssignment>
+      </assignments>
+      <throttleSize>0</throttleSize>
+    </step>
+  </steps>
+  <startSteps>faba48eb-809d-466e-833f-f787c17c95d1</startSteps>
+</flow>
