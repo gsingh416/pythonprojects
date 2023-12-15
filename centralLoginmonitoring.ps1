@@ -6,7 +6,7 @@ $PWord = ConvertTo-SecureString -string "India#123456789" -AsPlainText -Force
 $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $PWord
 
 $URLListFile = "C:\Windows\Scripts\URLList.txt"  
-$URLList = Get-Content $URLListFile -ErrorAction SilentlyContinue 
+$URLList = Get-Content $URLListFile -ErrorAction SilentlyContinue  
   $Result = @() 
    
    
