@@ -5,6 +5,8 @@ $User =  "svc-in-hpoo@capgemini.com"
 $PWord = ConvertTo-SecureString -string "India#123456789" -AsPlainText -Force
 $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $PWord
 
+Write-Host "Test Message"
+
 $URLListFile = "C:\Windows\Scripts\URLList.txt"  
 $URLList = Get-Content $URLListFile -ErrorAction SilentlyContinue  
   $Result = @() 
